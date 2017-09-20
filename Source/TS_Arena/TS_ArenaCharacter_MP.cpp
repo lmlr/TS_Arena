@@ -22,7 +22,7 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 
 	// Create a Box for world interaction
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
-	InteractionBox->AttachTo(RootComponent);
+	InteractionBox->SetupAttachment(RootComponent);
 	// TODO gets overwritten by BP, find better way
 	InteractionBox->InitBoxExtent({ 64.f, 48.f, 100.f });
 
@@ -51,7 +51,19 @@ void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ServerCollectItem running on Server!"))
-		
+		// Array of overlapping actors to fill
+		TArray<AActor*> OverlappingActors;
+		FString Names;
+		int Nums = 0;
+		InteractionBox->GetOverlappingActors(OverlappingActors);
+		for (AActor* Actor : OverlappingActors)
+		{
+			Names.Append(Actor->GetClass()->GetName());
+			Names.Append(" ");
+			Nums++;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Found a total of %d with Names: %s"), Nums, *Names)
+
+
 	}
 }
