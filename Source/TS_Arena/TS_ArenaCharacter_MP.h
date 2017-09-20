@@ -28,6 +28,12 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
 	void ServerCollectItem();
 
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	float GetMaxHealth() { return MaxHealth; };
+
+	UFUNCTION(BlueprintCallable, Category = "Stats")
+	float GetCurrentHealth() { return CurrentHealth; };
+
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
@@ -40,6 +46,13 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* InteractionBox;
-	
+
+	UPROPERTY(Replicated, EditAnywhere, Category = "Stats",
+		meta = (AllowPrivateAccess = "true"))
+	float MaxHealth;
+
+	UPROPERTY(Replicated, EditAnywhere, Category = "Stats",
+		meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth;
 	
 };

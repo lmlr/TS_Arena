@@ -27,13 +27,23 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 	// TODO gets overwritten by BP, find better way
 	InteractionBox->InitBoxExtent({ 64.f, 48.f, 100.f });
 
+	// Set Initial values
+	if (Role == ROLE_Authority)
+	{
+		MaxHealth = 100.f;
+		CurrentHealth = MaxHealth;
+	}
+
 }
 
 void ATS_ArenaCharacter_MP::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	// Add ALL replicated variables or crash and burn terribly
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, PickupSphereRadius);
+	DOREPLIFETIME(ATS_ArenaCharacter_MP, MaxHealth);
+	DOREPLIFETIME(ATS_ArenaCharacter_MP, CurrentHealth);
 }
 
 void ATS_ArenaCharacter_MP::ClientCollectItem()
