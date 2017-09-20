@@ -18,10 +18,22 @@ public:
 
 	ATS_ArenaCharacter_MP();
 
-	UPROPERTY(EditAnywhere, Category = "Pickup")
-	class USphereComponent* PickupSphere;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	
+	class USphereComponent* GetPickupSphere() const { return PickupSphere; }
+
 private:
+	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	float PickupSphereRadius;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* PickupSphere;
+
+	UPROPERTY(VisibleAnywhere, Category = "Pickup",
+		meta = (AllowPrivateAccess = "false"))
+	class UBoxComponent* InteractionBox;
 	
 	
 };

@@ -2,6 +2,8 @@
 
 #include "TS_ArenaCharacter_MP.h"
 #include "Classes/Components/SphereComponent.h"
+#include "Classes/Components/BoxComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -13,6 +15,22 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 
 	// Create a Sphere to collect Pickups like Health and Ammo
 	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
-	
+	PickupSphere->AttachTo(RootComponent);
+	// TODO gets overwritten by BP, find better way
+	PickupSphereRadius = 100.f;
+	PickupSphere->SetSphereRadius(100.f);
 
+	// Create a Box for world interaction
+	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
+	InteractionBox->AttachTo(RootComponent);
+	// TODO gets overwritten by BP, find better way
+	InteractionBox->InitBoxExtent({ 64.f, 48.f, 100.f });
+
+}
+
+void ATS_ArenaCharacter_MP::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ATS_ArenaCharacter_MP, PickupSphereRadius);
 }
