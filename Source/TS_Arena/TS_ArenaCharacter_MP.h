@@ -22,6 +22,12 @@ public:
 	
 	class USphereComponent* GetPickupSphere() const { return PickupSphere; }
 
+	UFUNCTION(BlueprintCallable, Category = "Pickup")
+	void ClientCollectItem();
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
+	void ServerCollectItem();
+
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
@@ -31,8 +37,8 @@ private:
 		meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* PickupSphere;
 
-	UPROPERTY(VisibleAnywhere, Category = "Pickup",
-		meta = (AllowPrivateAccess = "false"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* InteractionBox;
 	
 	

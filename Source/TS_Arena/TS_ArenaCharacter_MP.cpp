@@ -15,7 +15,7 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 
 	// Create a Sphere to collect Pickups like Health and Ammo
 	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
-	PickupSphere->AttachTo(RootComponent);
+	PickupSphere->SetupAttachment(RootComponent);
 	// TODO gets overwritten by BP, find better way
 	PickupSphereRadius = 100.f;
 	PickupSphere->SetSphereRadius(100.f);
@@ -33,4 +33,25 @@ void ATS_ArenaCharacter_MP::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, PickupSphereRadius);
+}
+
+void ATS_ArenaCharacter_MP::ClientCollectItem()
+{
+	// Call Server Function here
+	ServerCollectItem();
+}
+
+bool ATS_ArenaCharacter_MP::ServerCollectItem_Validate()
+{
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ServerCollectItem running on Server!"))
+		
+	}
 }
