@@ -4,6 +4,7 @@
 #include "Classes/Components/SphereComponent.h"
 #include "Classes/Components/BoxComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Base_Pickup.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -55,12 +56,13 @@ void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
 		TArray<AActor*> OverlappingActors;
 		FString Names;
 		int Nums = 0;
-		InteractionBox->GetOverlappingActors(OverlappingActors);
+		InteractionBox->GetOverlappingActors(OverlappingActors, ABase_Pickup::StaticClass());
 		for (AActor* Actor : OverlappingActors)
 		{
 			Names.Append(Actor->GetClass()->GetName());
 			Names.Append(" ");
 			Nums++;
+			Cast<ABase_Pickup>(Actor)->Collected(this);
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Found a total of %d with Names: %s"), Nums, *Names)
 
