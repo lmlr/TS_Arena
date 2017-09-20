@@ -12,6 +12,8 @@
 //////////////////////////////////////////////////////////////////////////
 // ATS_ArenaCharacter
 
+// Manage movement here
+
 ATS_ArenaCharacter::ATS_ArenaCharacter()
 {
 	// Set size for collision capsule
