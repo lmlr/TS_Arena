@@ -15,8 +15,13 @@ public:
 	// Sets default values for this actor's properties
 	ABase_Pickup();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
+
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Collected(class ATS_ArenaCharacter_MP* Collector);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ClientCollected();
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,6 +31,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Mesh;
+
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
+	bool bIsActive;
 	
 	
 };
