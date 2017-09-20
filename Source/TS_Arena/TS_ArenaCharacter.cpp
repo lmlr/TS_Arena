@@ -70,29 +70,8 @@ void ATS_ArenaCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ATS_ArenaCharacter::LookUpAtRate);
 
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATS_ArenaCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ATS_ArenaCharacter::TouchStopped);
-
-	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATS_ArenaCharacter::OnResetVR);
 }
 
-
-void ATS_ArenaCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void ATS_ArenaCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		Jump();
-}
-
-void ATS_ArenaCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-		StopJumping();
-}
 
 void ATS_ArenaCharacter::TurnAtRate(float Rate)
 {
