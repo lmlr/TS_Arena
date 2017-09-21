@@ -13,8 +13,11 @@ UCLASS()
 class TS_ARENA_API ABuff_Pickup : public ABase_Pickup
 {
 	GENERATED_BODY()
-	
+
+	ABuff_Pickup();
+
 	virtual void Collected_Implementation(class ATS_ArenaCharacter_MP* Collector) override;
 	
-	
+private:
+	float DeltaHealth;
 };

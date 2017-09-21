@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	float GetCurrentHealth() { return CurrentHealth; };
 
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Stats")
+	void ServerDeltaHealthEvent(float DeltaHealth);
+
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))

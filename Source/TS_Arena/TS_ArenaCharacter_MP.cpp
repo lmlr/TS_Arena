@@ -79,3 +79,19 @@ void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
 
 	}
 }
+
+bool ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Validate(float DeltaHealth)
+{
+
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(float DeltaHealth)
+{
+	if (Role == ROLE_Authority)
+	{
+		CurrentHealth += DeltaHealth;
+	}
+}
+
