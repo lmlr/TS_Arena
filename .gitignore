@@ -1,7 +1,3 @@
-Binaries
-DerivedDataCache
-Intermediate
-Saved
 .vs
 *.VC.db
 *.opensdf
@@ -11,3 +7,9 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
+
+Binaries/*
+DerivedDataCache/*
+Intermediate/*
+Saved/*
+Content/AnimStarterPack/*
