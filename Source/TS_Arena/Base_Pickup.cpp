@@ -3,6 +3,9 @@
 #include "Base_Pickup.h"
 #include "TS_ArenaCharacter_MP.h"
 #include "Net/UnrealNetwork.h"
+#include "Classes/Components/SphereComponent.h"
+#include "Classes/Components/SceneComponent.h"
+#include "Classes/Components/StaticMeshComponent.h"
 
 // Sets default values
 ABase_Pickup::ABase_Pickup()
@@ -14,11 +17,21 @@ ABase_Pickup::ABase_Pickup()
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
+	Root = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("FuckingROOT"));
+	RootComponent = Root;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
-
+	Mesh->SetupAttachment(Root);
+	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
+	PickupSphere->SetupAttachment(Root);
+	
 	bIsActive = true;
 
+}
+
+void ABase_Pickup::BeginPlay()
+{
+	Super::BeginPlay();
+	
 }
 
 void ABase_Pickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -26,13 +39,6 @@ void ABase_Pickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ABase_Pickup, bIsActive)
-}
-
-// Called when the game starts or when spawned
-void ABase_Pickup::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 bool ABase_Pickup::Collected_Validate(ATS_ArenaCharacter_MP* Collector)

@@ -3,9 +3,12 @@
 #include "BaseWeapon_Pickup.h"
 #include "TS_ArenaCharacter_MP.h"
 #include "Net/UnrealNetwork.h"
+#include "Classes/Components/SkeletalMeshComponent.h"
 
 ABaseWeapon_Pickup::ABaseWeapon_Pickup()
-{
+{	
+	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	WeaponMesh->SetupAttachment(RootComponent);
 
 	bool bInUse = false;
 }
@@ -58,6 +61,7 @@ void ABaseWeapon_Pickup::ServerDropped_Implementation(class ATS_ArenaCharacter_M
 
 void ABaseWeapon_Pickup::ClientBroadcastDrop_Implementation(ATS_ArenaCharacter_MP * Collector)
 {
+	// Should probably NOT all be done client-side
 	bReplicateMovement = true;
 	this->SetActorEnableCollision(true);
 	FVector DropOffset = Collector->GetActorForwardVector();

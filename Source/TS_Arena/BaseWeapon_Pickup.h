@@ -32,4 +32,8 @@ public:
 private:
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
 	bool bInUse;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* WeaponMesh;
 };

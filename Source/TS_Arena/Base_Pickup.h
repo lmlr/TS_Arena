@@ -35,5 +35,12 @@ private:
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
 	bool bIsActive;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* PickupSphere;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* Root;
 	
 };
