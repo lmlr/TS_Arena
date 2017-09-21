@@ -18,5 +18,6 @@ class TS_ARENA_API ABaseWeapon_Pickup : public ABase_Pickup
 
 	virtual void Collected_Implementation(class ATS_ArenaCharacter_MP* Collector) override;
 	
-	
+	UFUNCTION(NetMulticast, Reliable)
+	void ClientBroadcastPickup();
 };
