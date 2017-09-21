@@ -47,12 +47,19 @@ void ATS_ArenaCharacter_MP::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, PickupSphereRadius);
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, MaxHealth);
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, CurrentHealth);
+	DOREPLIFETIME(ATS_ArenaCharacter_MP, EquipedWeapon);
 }
 
 void ATS_ArenaCharacter_MP::ClientCollectItem()
 {
 	// Call Server Function here
 	ServerCollectItem();
+}
+
+void ATS_ArenaCharacter_MP::ClientDropItem()
+{
+	// Call Server Function here
+	ServerDropItem();
 }
 
 bool ATS_ArenaCharacter_MP::ServerCollectItem_Validate()
@@ -73,11 +80,33 @@ void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
 		InteractionBox->GetOverlappingActors(OverlappingActors, ABaseWeapon_Pickup::StaticClass());
 		if (OverlappingActors.Num() > 0)
 		{
-			Cast<ABaseWeapon_Pickup>(OverlappingActors[0])->Collected(this);
+			// No Weapon equiped? Equip this!
+			if (!EquipedWeapon)
+			{
+				Cast<ABaseWeapon_Pickup>(OverlappingActors[0])->Collected(this);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("I still have a weapon equiped"))
+			}
 		}
-		
 	}
 }
+
+bool ATS_ArenaCharacter_MP::ServerDropItem_Validate()
+{
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::ServerDropItem_Implementation()
+{
+	if (Role == ROLE_Authority && EquipedWeapon)
+	{
+		EquipedWeapon->ServerDropped(this);
+	}
+}
+
 
 bool ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Validate(float DeltaHealth)
 {
@@ -94,3 +123,15 @@ void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(float DeltaHea
 	}
 }
 
+bool ATS_ArenaCharacter_MP::SetEquipedWeapon_Validate(ABaseWeapon_Pickup* Weapon)
+{
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::SetEquipedWeapon_Implementation(ABaseWeapon_Pickup* Weapon)
+{
+	// Set the equiped Weapon. This gets set to NULL on weapon drop
+	EquipedWeapon = Weapon;
+	
+}

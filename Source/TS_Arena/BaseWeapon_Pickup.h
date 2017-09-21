@@ -13,11 +13,23 @@ UCLASS()
 class TS_ARENA_API ABaseWeapon_Pickup : public ABase_Pickup
 {
 	GENERATED_BODY()
-
+public:
 	ABaseWeapon_Pickup();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	virtual void Collected_Implementation(class ATS_ArenaCharacter_MP* Collector) override;
 	
 	UFUNCTION(NetMulticast, Reliable)
-	void ClientBroadcastPickup();
+	void ClientBroadcastPickup(ATS_ArenaCharacter_MP * Collector);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ServerDropped(class ATS_ArenaCharacter_MP* Collector);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ClientBroadcastDrop(ATS_ArenaCharacter_MP * Collector);
+
+private:
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
+	bool bInUse;
 };

@@ -25,8 +25,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pickup")
 	void ClientCollectItem();
 
+	UFUNCTION(BlueprintCallable, Category = "Pickup")
+	void ClientDropItem();
+
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
 	void ServerCollectItem();
+
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
+	void ServerDropItem();
 
 	UFUNCTION(BlueprintCallable, Category = "Stats")
 	float GetMaxHealth() { return MaxHealth; };
@@ -36,6 +42,11 @@ public:
 
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Stats")
 	void ServerDeltaHealthEvent(float DeltaHealth);
+
+	class ABaseWeapon_Pickup* GetEquipedWeapon() { return EquipedWeapon; };
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation, Category = "Pickup")
+	void SetEquipedWeapon(class ABaseWeapon_Pickup* Weapon);
 
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
@@ -58,7 +69,7 @@ private:
 		meta = (AllowPrivateAccess = "true"))
 	float CurrentHealth;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class ABaseWeapon_Pickup* EquipedWeapon;
 	
