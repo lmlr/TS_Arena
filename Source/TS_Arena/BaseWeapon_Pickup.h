@@ -4,21 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Base_Pickup.h"
-#include "Buff_Pickup.generated.h"
+#include "BaseWeapon_Pickup.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TS_ARENA_API ABuff_Pickup : public ABase_Pickup
+class TS_ARENA_API ABaseWeapon_Pickup : public ABase_Pickup
 {
 	GENERATED_BODY()
 
-	ABuff_Pickup();
+	ABaseWeapon_Pickup();
 
 	virtual void Collected_Implementation(class ATS_ArenaCharacter_MP* Collector) override;
 	
-private:
-	UPROPERTY(EditAnywhere, Category = "Stats")
-	float DeltaHealth;
+	
 };

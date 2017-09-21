@@ -4,7 +4,8 @@
 #include "Classes/Components/SphereComponent.h"
 #include "Classes/Components/BoxComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "Base_Pickup.h"
+//#include "Base_Pickup.h"
+#include "BaseWeapon_Pickup.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -26,6 +27,8 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 	InteractionBox->SetupAttachment(RootComponent);
 	// TODO gets overwritten by BP, find better way
 	InteractionBox->InitBoxExtent({ 64.f, 48.f, 100.f });
+
+	EquipedWeapon = nullptr;
 
 	// Set Initial values
 	if (Role == ROLE_Authority)
@@ -58,6 +61,7 @@ bool ATS_ArenaCharacter_MP::ServerCollectItem_Validate()
 	return true;
 }
 
+// TODO split pickup in passive and active functions (this is active)
 void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
 {
 	if (Role == ROLE_Authority)
@@ -66,17 +70,12 @@ void ATS_ArenaCharacter_MP::ServerCollectItem_Implementation()
 		TArray<AActor*> OverlappingActors;
 		FString Names;
 		int Nums = 0;
-		InteractionBox->GetOverlappingActors(OverlappingActors, ABase_Pickup::StaticClass());
-		for (AActor* Actor : OverlappingActors)
+		InteractionBox->GetOverlappingActors(OverlappingActors, ABaseWeapon_Pickup::StaticClass());
+		if (OverlappingActors.Num() > 0)
 		{
-			Names.Append(Actor->GetClass()->GetName());
-			Names.Append(" ");
-			Nums++;
-			Cast<ABase_Pickup>(Actor)->Collected(this);
+			Cast<ABaseWeapon_Pickup>(OverlappingActors[0])->Collected(this);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Found a total of %d with Names: %s"), Nums, *Names)
-
-
+		
 	}
 }
 

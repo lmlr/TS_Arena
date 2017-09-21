@@ -57,5 +57,9 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Stats",
 		meta = (AllowPrivateAccess = "true"))
 	float CurrentHealth;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	class ABaseWeapon_Pickup* EquipedWeapon;
 	
 };
