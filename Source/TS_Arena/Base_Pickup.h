@@ -18,10 +18,10 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Collected(class ATS_ArenaCharacter_MP* Collector);
+	virtual void Collected(class ATS_ArenaCharacter_MP* Collector);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void ClientCollected();
+	virtual void ClientCollected();
 
 protected:
 	// Called when the game starts or when spawned

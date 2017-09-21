@@ -23,6 +23,8 @@ ABase_Pickup::ABase_Pickup()
 
 void ABase_Pickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 	DOREPLIFETIME(ABase_Pickup, bIsActive)
 }
 
@@ -41,17 +43,22 @@ bool ABase_Pickup::Collected_Validate(ATS_ArenaCharacter_MP* Collector)
 
 void ABase_Pickup::Collected_Implementation(ATS_ArenaCharacter_MP* Collector)
 {
+	// this should manage gameplay functionality (e.g. stats)
 	if (Role == ROLE_Authority)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s was collected by %s"), *this->GetName(),
 			*Collector->GetName())
 
+		this->SetLifeSpan(0.1f);
 		ClientCollected();
+
 	}
 }
 
 void ABase_Pickup::ClientCollected_Implementation()
 {
+	// this should manage client side fluff (particles etc)
+	
 	UE_LOG(LogTemp, Warning, TEXT("This Ran on a Client"))
-	this->Destroy();
+	
 }
