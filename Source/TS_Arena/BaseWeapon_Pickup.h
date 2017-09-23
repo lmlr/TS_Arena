@@ -29,21 +29,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void ClientBroadcastDrop(ATS_ArenaCharacter_MP * Collector);
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerFireWeapon();
-
-protected:
-	// Timer to manage Projectile "reload" speed
-	FTimerHandle ProjectileSpawnTimer;
-
-	// Base reload time (might be subject to buffs), seconds
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Firing")
-	float BaseReloadTime;
-
 private:
-	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
-	class ATS_ArenaCharacter_MP* MyOwner;
-
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
 	bool bInUse;
 

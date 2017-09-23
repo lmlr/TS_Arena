@@ -48,10 +48,6 @@ public:
 	UFUNCTION(NetMulticast, Reliable, WithValidation, Category = "Pickup")
 	void SetEquipedWeapon(class ABaseWeapon_Pickup* Weapon);
 
-	void Fire() override;
-
-	void StopFiring() override;
-
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))

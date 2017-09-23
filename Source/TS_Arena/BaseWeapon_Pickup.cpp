@@ -4,30 +4,13 @@
 #include "TS_ArenaCharacter_MP.h"
 #include "Net/UnrealNetwork.h"
 #include "Classes/Components/SkeletalMeshComponent.h"
-#include "Engine/World.h"
-
 
 ABaseWeapon_Pickup::ABaseWeapon_Pickup()
 {	
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
 
-	if (Role == ROLE_Authority)
-	{
-		// Weapon is not in use on spawn
-		bool bInUse = false;
-
-		// Settings Base Reload Time
-		BaseReloadTime = 1.f;
-
-		// No owner on spawn
-		MyOwner = nullptr;
-
-		GetWorldTimerManager().SetTimer(ProjectileSpawnTimer, this, 
-			&ABaseWeapon_Pickup::ServerFireWeapon, BaseReloadTime, false);
-
-	}
-
+	bool bInUse = false;
 }
 
 void ABaseWeapon_Pickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -50,7 +33,6 @@ void ABaseWeapon_Pickup::Collected_Implementation(ATS_ArenaCharacter_MP * Collec
 			FAttachmentTransformRules::SnapToTargetNotIncludingScale, "GunSocket");
 
 		bInUse = true;
-		MyOwner = Collector;
 	}
 }
 
@@ -74,8 +56,6 @@ void ABaseWeapon_Pickup::ServerDropped_Implementation(class ATS_ArenaCharacter_M
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Drop Was Called on Server"))
 		this->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		ClientBroadcastDrop(Collector);
-
-		MyOwner = nullptr;
 	}
 }
 
@@ -91,19 +71,3 @@ void ABaseWeapon_Pickup::ClientBroadcastDrop_Implementation(ATS_ArenaCharacter_M
 	bInUse = false;
 }
 
-bool ABaseWeapon_Pickup::ServerFireWeapon_Validate()
-{
-	// TODO some real validation
-	return true;
-}
-
-void ABaseWeapon_Pickup::ServerFireWeapon_Implementation()
-{
-	if (Role == ROLE_Authority)
-	{
-		// Spawn Projectile
-		UE_LOG(LogTemp, Warning, TEXT("ServerFireWeapon was called"))
-
-		// Set timer to spawn Next Projectile
-	}
-}
