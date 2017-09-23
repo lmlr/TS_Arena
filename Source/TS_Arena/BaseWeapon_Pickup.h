@@ -20,6 +20,8 @@ public:
 
 	virtual void Collected_Implementation(class ATS_ArenaCharacter_MP* Collector) override;
 	
+	FTimerHandle WeaponFireTimer;
+
 	UFUNCTION(NetMulticast, Reliable)
 	void ClientBroadcastPickup(ATS_ArenaCharacter_MP * Collector);
 
@@ -28,6 +30,11 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void ClientBroadcastDrop(ATS_ArenaCharacter_MP * Collector);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void StartFiring();
+
+	void SetFireActive(bool bNewVal) { bFireActive = bNewVal; };
 
 private:
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
@@ -40,4 +47,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class ATS_ArenaCharacter_MP* MyOwner;
+
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
+	bool bFireActive;
+
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	int Ammo;
 };

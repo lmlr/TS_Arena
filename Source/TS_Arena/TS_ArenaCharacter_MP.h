@@ -55,6 +55,9 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
 	void ServerIssueFireCommand();
 
+	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
+	void ServerIssueStopFireCommand();
+
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
@@ -79,5 +82,5 @@ private:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class ABaseWeapon_Pickup* EquipedWeapon;
-	
+
 };

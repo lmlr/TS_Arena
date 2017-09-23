@@ -4,6 +4,7 @@
 #include "TS_ArenaCharacter_MP.h"
 #include "Net/UnrealNetwork.h"
 #include "Classes/Components/SkeletalMeshComponent.h"
+#include "Engine/World.h"
 
 ABaseWeapon_Pickup::ABaseWeapon_Pickup()
 {	
@@ -11,9 +12,14 @@ ABaseWeapon_Pickup::ABaseWeapon_Pickup()
 	WeaponMesh->SetupAttachment(RootComponent);
 	if (Role == ROLE_Authority)
 	{
-		bool bInUse = false;
+		bInUse = false;
+
+		bFireActive = false;
 
 		MyOwner = nullptr;
+
+		Ammo = 10;
+
 	}
 	
 }
@@ -23,6 +29,8 @@ void ABaseWeapon_Pickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ABaseWeapon_Pickup, bInUse)
+	DOREPLIFETIME(ABaseWeapon_Pickup, bFireActive)
+	DOREPLIFETIME(ABaseWeapon_Pickup, Ammo)
 
 }
 
@@ -65,6 +73,7 @@ void ABaseWeapon_Pickup::ServerDropped_Implementation(class ATS_ArenaCharacter_M
 
 		MyOwner = nullptr;
 		bInUse = false;
+		bFireActive = false;
 	}
 }
 
@@ -79,3 +88,26 @@ void ABaseWeapon_Pickup::ClientBroadcastDrop_Implementation(ATS_ArenaCharacter_M
 	Collector->SetEquipedWeapon(nullptr);
 }
 
+bool ABaseWeapon_Pickup::StartFiring_Validate()
+{
+	// TODO some real validation
+	return true;
+}
+
+void ABaseWeapon_Pickup::StartFiring_Implementation()
+{
+	// TODO some logic to stop timer reset on trigger pulls
+	if (Role == ROLE_Authority && bFireActive)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s started Firing"), *(this->GetName()))
+		
+		// Set Delay for the next projectile
+		GetWorld()->GetTimerManager().SetTimer(WeaponFireTimer, this, &ABaseWeapon_Pickup::StartFiring, 1.25f, false);
+
+		// check Ammo
+		if (Ammo > 0)
+		{
+			// Fire a Projectile
+		}
+	}
+}

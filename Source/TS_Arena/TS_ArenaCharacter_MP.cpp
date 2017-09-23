@@ -148,6 +148,10 @@ void ATS_ArenaCharacter_MP::Fire()
 void ATS_ArenaCharacter_MP::StopFiring()
 {
 	Super::StopFiring();
+	if (EquipedWeapon)
+	{
+		ServerIssueStopFireCommand();
+	}
 }
 
 bool ATS_ArenaCharacter_MP::ServerIssueFireCommand_Validate()
@@ -160,7 +164,24 @@ void ATS_ArenaCharacter_MP::ServerIssueFireCommand_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
+		EquipedWeapon->SetFireActive(true);
 		// Tell the Weapon to fire
 		UE_LOG(LogTemp, Warning, TEXT("Server tells the Weapon to fire"))
+		EquipedWeapon->StartFiring();
+	}
+}
+
+bool ATS_ArenaCharacter_MP::ServerIssueStopFireCommand_Validate()
+{
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::ServerIssueStopFireCommand_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Server tells the Weapon to stop fire"))
+		EquipedWeapon->SetFireActive(false);
 	}
 }
