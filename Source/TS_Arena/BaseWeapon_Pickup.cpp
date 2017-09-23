@@ -9,8 +9,13 @@ ABaseWeapon_Pickup::ABaseWeapon_Pickup()
 {	
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
+	if (Role == ROLE_Authority)
+	{
+		bool bInUse = false;
 
-	bool bInUse = false;
+		MyOwner = nullptr;
+	}
+	
 }
 
 void ABaseWeapon_Pickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -33,6 +38,7 @@ void ABaseWeapon_Pickup::Collected_Implementation(ATS_ArenaCharacter_MP * Collec
 			FAttachmentTransformRules::SnapToTargetNotIncludingScale, "GunSocket");
 
 		bInUse = true;
+		MyOwner = Collector;
 	}
 }
 
@@ -56,6 +62,9 @@ void ABaseWeapon_Pickup::ServerDropped_Implementation(class ATS_ArenaCharacter_M
 		UE_LOG(LogTemp, Warning, TEXT("Weapon Drop Was Called on Server"))
 		this->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		ClientBroadcastDrop(Collector);
+
+		MyOwner = nullptr;
+		bInUse = false;
 	}
 }
 
@@ -68,6 +77,5 @@ void ABaseWeapon_Pickup::ClientBroadcastDrop_Implementation(ATS_ArenaCharacter_M
 	this->AddActorWorldOffset(DropOffset*200.f);
 	UE_LOG(LogTemp, Warning, TEXT("DropBroadcast was called on a Client"))
 	Collector->SetEquipedWeapon(nullptr);
-	bInUse = false;
 }
 

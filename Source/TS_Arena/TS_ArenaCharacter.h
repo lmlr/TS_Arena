@@ -36,9 +36,9 @@ protected:
 	/** Called for side to side input */
 	void MoveRight(float Value);
 
-	void Fire();
+	virtual void Fire();
 
-	void StopFiring();
+	virtual void StopFiring();
 	/** 
 	 * Called via input to turn at a given rate. 
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate

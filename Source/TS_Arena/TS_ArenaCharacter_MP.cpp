@@ -135,3 +135,32 @@ void ATS_ArenaCharacter_MP::SetEquipedWeapon_Implementation(ABaseWeapon_Pickup* 
 	EquipedWeapon = Weapon;
 	
 }
+
+void ATS_ArenaCharacter_MP::Fire()
+{
+	Super::Fire();
+	if (EquipedWeapon)
+	{
+		ServerIssueFireCommand();
+	}
+}
+
+void ATS_ArenaCharacter_MP::StopFiring()
+{
+	Super::StopFiring();
+}
+
+bool ATS_ArenaCharacter_MP::ServerIssueFireCommand_Validate()
+{
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::ServerIssueFireCommand_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		// Tell the Weapon to fire
+		UE_LOG(LogTemp, Warning, TEXT("Server tells the Weapon to fire"))
+	}
+}
