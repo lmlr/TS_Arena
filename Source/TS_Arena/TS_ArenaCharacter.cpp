@@ -47,6 +47,9 @@ ATS_ArenaCharacter::ATS_ArenaCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	// Character does not want to fire without input
+	bWantsToFire = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -61,6 +64,9 @@ void ATS_ArenaCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ATS_ArenaCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ATS_ArenaCharacter::MoveRight);
+
+	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATS_ArenaCharacter::Fire);
+	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &ATS_ArenaCharacter::StopFiring);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -112,4 +118,14 @@ void ATS_ArenaCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void ATS_ArenaCharacter::Fire()
+{
+	bWantsToFire = true;
+}
+
+void ATS_ArenaCharacter::StopFiring()
+{
+	bWantsToFire = false;
 }

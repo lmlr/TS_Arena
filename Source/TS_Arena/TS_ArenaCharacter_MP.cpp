@@ -135,3 +135,15 @@ void ATS_ArenaCharacter_MP::SetEquipedWeapon_Implementation(ABaseWeapon_Pickup* 
 	EquipedWeapon = Weapon;
 	
 }
+
+void ATS_ArenaCharacter_MP::Fire()
+{
+	Super::Fire();
+
+	
+}
+
+void ATS_ArenaCharacter_MP::StopFiring()
+{
+	Super::StopFiring();
+}
