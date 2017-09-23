@@ -34,9 +34,6 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void StartFiring();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void SpawnProjectile();
-
 	void SetFireActive(bool bNewVal) { bFireActive = bNewVal; };
 
 private:

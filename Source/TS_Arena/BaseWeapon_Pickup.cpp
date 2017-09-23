@@ -112,17 +112,11 @@ void ABaseWeapon_Pickup::StartFiring_Implementation()
 		if (Ammo > 0)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s started Firing"), *(this->GetName()))
-			SpawnProjectile();
+			FActorSpawnParameters SpawnParams;
+			auto Transform = Arrow->GetComponentTransform();
+			// Fire a Projectile
+			ABase_Projectile* Projectile =
+				GetWorld()->SpawnActor<ABase_Projectile>(ProjectileClass, Transform, SpawnParams);
 		}
 	}
-}
-
-void ABaseWeapon_Pickup::SpawnProjectile_Implementation()
-{
-	// TODO is this the right way to do it??
-	FActorSpawnParameters SpawnParams;
-	auto Transform = Arrow->GetComponentTransform();
-	// Fire a Projectile
-	ABase_Projectile* Projectile =
-		GetWorld()->SpawnActor<ABase_Projectile>(ProjectileClass, Transform, SpawnParams);
 }

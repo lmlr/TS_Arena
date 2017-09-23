@@ -6,6 +6,7 @@
 #include "Classes/Components/StaticMeshComponent.h"
 
 
+
 // Sets default values
 ABase_Projectile::ABase_Projectile()
 {
@@ -23,6 +24,9 @@ ABase_Projectile::ABase_Projectile()
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
 	ProjectileMesh->SetupAttachment(CollisionSphere);
+
+	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ABase_Projectile::OnOverlapBegin);
+
 }
 
 // Called when the game starts or when spawned
@@ -36,5 +40,12 @@ void ABase_Projectile::BeginPlay()
 void ABase_Projectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABase_Projectile::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	auto Name = this->GetName();
+	auto Other = OtherActor->GetName();
+	UE_LOG(LogTemp, Warning, TEXT("%s overlapped with %s"), *Name, *Other)
 }
 
