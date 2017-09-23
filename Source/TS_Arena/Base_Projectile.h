@@ -35,7 +35,4 @@ private:
 		meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* ProjectileMesh;
 	
-
-	
-	
 };

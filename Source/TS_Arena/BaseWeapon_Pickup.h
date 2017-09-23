@@ -34,6 +34,9 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void StartFiring();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void SpawnProjectile();
+
 	void SetFireActive(bool bNewVal) { bFireActive = bNewVal; };
 
 private:
@@ -46,6 +49,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
+	class UArrowComponent* Arrow;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
 	class ATS_ArenaCharacter_MP* MyOwner;
 
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Pickup")
@@ -54,4 +61,9 @@ private:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	int Ammo;
+
+	// Projectile class to spawn
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class ABase_Projectile> ProjectileClass;
 };

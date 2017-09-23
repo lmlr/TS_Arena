@@ -36,6 +36,5 @@ void ABase_Projectile::BeginPlay()
 void ABase_Projectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 

@@ -4,12 +4,18 @@
 #include "TS_ArenaCharacter_MP.h"
 #include "Net/UnrealNetwork.h"
 #include "Classes/Components/SkeletalMeshComponent.h"
+#include "Classes/Components/ArrowComponent.h"
 #include "Engine/World.h"
+#include "Base_Projectile.h"
 
 ABaseWeapon_Pickup::ABaseWeapon_Pickup()
 {	
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(RootComponent);
+
+	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("ProjectileArrow"));
+	Arrow->SetupAttachment(RootComponent);
+
 	if (Role == ROLE_Authority)
 	{
 		bInUse = false;
@@ -98,16 +104,25 @@ void ABaseWeapon_Pickup::StartFiring_Implementation()
 {
 	// TODO some logic to stop timer reset on trigger pulls
 	if (Role == ROLE_Authority && bFireActive)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s started Firing"), *(this->GetName()))
-		
+	{	
 		// Set Delay for the next projectile
 		GetWorld()->GetTimerManager().SetTimer(WeaponFireTimer, this, &ABaseWeapon_Pickup::StartFiring, 1.25f, false);
 
 		// check Ammo
 		if (Ammo > 0)
 		{
-			// Fire a Projectile
+			UE_LOG(LogTemp, Warning, TEXT("%s started Firing"), *(this->GetName()))
+			SpawnProjectile();
 		}
 	}
+}
+
+void ABaseWeapon_Pickup::SpawnProjectile_Implementation()
+{
+	// TODO is this the right way to do it??
+	FActorSpawnParameters SpawnParams;
+	auto Transform = Arrow->GetComponentTransform();
+	// Fire a Projectile
+	ABase_Projectile* Projectile =
+		GetWorld()->SpawnActor<ABase_Projectile>(ProjectileClass, Transform, SpawnParams);
 }
