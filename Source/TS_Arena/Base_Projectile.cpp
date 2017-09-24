@@ -5,7 +5,8 @@
 #include "Classes/GameFramework/ProjectileMovementComponent.h"
 #include "Classes/Components/StaticMeshComponent.h"
 #include "TS_ArenaCharacter_MP.h"
-
+#include "Classes/Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 
 // Sets default values
@@ -25,6 +26,8 @@ ABase_Projectile::ABase_Projectile()
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
 	ProjectileMesh->SetupAttachment(CollisionSphere);
+
+	ProjectileLifeSpan = 3.f;
 }
 
 // Called when the game starts or when spawned
@@ -34,6 +37,8 @@ void ABase_Projectile::BeginPlay()
 
 	// Delegate function must be bound on begin play, wont work on contructor!
 	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ABase_Projectile::OnOverlapBegin);
+
+	this->SetLifeSpan(ProjectileLifeSpan);
 }
 
 // Called every frame
@@ -84,12 +89,13 @@ void ABase_Projectile::ProjectileHandleCollision_Implementation(AActor* HitTarge
 			// Deal Damage to the Player
 			Cast<ATS_ArenaCharacter_MP>(HitTarget)->ServerDeltaHealthEvent(-20.f);
 			// Activate visual effects on all clients
+			ClientProjectileCollision();
 		}
 		// Logic for hitting something else
 		else
 		{
 			// Activate visual effects on all clients
-
+			ClientProjectileCollision();
 			// some other logic (radial dmg?)
 		}
 		Destroy();
@@ -98,5 +104,10 @@ void ABase_Projectile::ProjectileHandleCollision_Implementation(AActor* HitTarge
 
 void ABase_Projectile::ClientProjectileCollision_Implementation()
 {
-
+	// check for a valid Particle System
+	if (HitParticleSystem)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystem,
+			this->GetActorTransform(), true);
+	}
 }

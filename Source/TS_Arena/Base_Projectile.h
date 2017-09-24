@@ -50,6 +50,14 @@ private:
 		meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* ProjectileMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile",
+		meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* HitParticleSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile",
+		meta = (AllowPrivateAccess = "true"))
+	float ProjectileLifeSpan;
+
 	// Owner already stored in the AActor* Owner base class (SpawnParamter)
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile",
 	//	meta = (AllowPrivateAccess = "true"))
