@@ -24,6 +24,15 @@ public:
 		AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	// Base function for collision handling
+	// other projectiles might want to implement different effects
+	UFUNCTION(Server, Reliable, WithValidation)
+	virtual void ProjectileHandleCollision(AActor* HitTarget, bool bHitPlayer);
+
+	// Base function to call on clients on collision resolve
+	UFUNCTION(NetMulticast, Reliable)
+	void ClientProjectileCollision();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

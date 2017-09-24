@@ -45,15 +45,58 @@ void ABase_Projectile::Tick(float DeltaTime)
 void ABase_Projectile::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, 
 	AActor * OtherActor, UPrimitiveComponent * OtherComp, 
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
-{
+{	
+	// Only do this on the server
 	if (Role == ROLE_Authority)
 	{	
-		if(auto Controller = Cast<ATS_ArenaCharacter_MP>(OtherActor))
+		// check if the overlapping actor is of class TS_ArenaCharacter_MP
+		if(OtherActor->IsA(ATS_ArenaCharacter_MP::StaticClass()))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Overlapping Actor: %s of Class: %s"), 
-				*OtherActor->GetName(), *Controller->GetController()->GetName())
+			// check that we are not overlapping with ourself
+			if (this->GetOwner() != Cast<ATS_ArenaCharacter_MP>(OtherActor)->GetController())
+			{
+				ProjectileHandleCollision(OtherActor, true);
+			}
+		}
+		
+		else
+		{
+			// Handle overlap events with different actors (e.g. world static)
+			ProjectileHandleCollision(OtherActor, false);
 		}
 			
 	}
 }
 
+bool ABase_Projectile::ProjectileHandleCollision_Validate(AActor* HitTarget, bool bHitPlayer)
+{
+	// TODO some real validation
+	return true;
+}
+
+void ABase_Projectile::ProjectileHandleCollision_Implementation(AActor* HitTarget, bool bHitPlayer)
+{
+	if (Role == ROLE_Authority)
+	{
+		// Did we hit a Player directly?
+		if (bHitPlayer)
+		{
+			// Deal Damage to the Player
+			Cast<ATS_ArenaCharacter_MP>(HitTarget)->ServerDeltaHealthEvent(-20.f);
+			// Activate visual effects on all clients
+		}
+		// Logic for hitting something else
+		else
+		{
+			// Activate visual effects on all clients
+
+			// some other logic (radial dmg?)
+		}
+		Destroy();
+	}
+}
+
+void ABase_Projectile::ClientProjectileCollision_Implementation()
+{
+
+}
