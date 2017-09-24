@@ -113,6 +113,9 @@ void ABaseWeapon_Pickup::StartFiring_Implementation()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s started Firing"), *(this->GetName()))
 			FActorSpawnParameters SpawnParams;
+			// Player Spawning the Projectile "owns" it
+			// AController might be the bette choice (includes AI controller)
+			SpawnParams.Owner = Cast<APlayerController>(MyOwner->GetController());
 			auto Transform = Arrow->GetComponentTransform();
 			// Fire a Projectile
 			ABase_Projectile* Projectile =

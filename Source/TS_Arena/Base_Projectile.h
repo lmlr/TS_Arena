@@ -40,5 +40,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile",
 		meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* ProjectileMesh;
+
+	// Owner already stored in the AActor* Owner base class (SpawnParamter)
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile",
+	//	meta = (AllowPrivateAccess = "true"))
+	//class APlayerController* OwningPlayerController;
 	
 };
