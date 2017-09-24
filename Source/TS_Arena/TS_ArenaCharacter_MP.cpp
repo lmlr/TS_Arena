@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 //#include "Base_Pickup.h"
 #include "BaseWeapon_Pickup.h"
+#include "Engine/World.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -35,6 +36,7 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 	{
 		MaxHealth = 100.f;
 		CurrentHealth = MaxHealth;
+		bIsDead = false;
 	}
 
 }
@@ -48,6 +50,7 @@ void ATS_ArenaCharacter_MP::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, MaxHealth);
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, CurrentHealth);
 	DOREPLIFETIME(ATS_ArenaCharacter_MP, EquipedWeapon);
+	DOREPLIFETIME(ATS_ArenaCharacter_MP, bIsDead);
 }
 
 void ATS_ArenaCharacter_MP::ClientCollectItem()
@@ -120,6 +123,12 @@ void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(float DeltaHea
 	if (Role == ROLE_Authority)
 	{
 		CurrentHealth += DeltaHealth;
+		// Check if the character died
+		if (CurrentHealth <= 0.f)
+		{
+			bIsDead = true;
+			ServerOnDeath();
+		}
 	}
 }
 
@@ -184,4 +193,35 @@ void ATS_ArenaCharacter_MP::ServerIssueStopFireCommand_Implementation()
 		UE_LOG(LogTemp, Warning, TEXT("Server tells the Weapon to stop fire"))
 		EquipedWeapon->SetFireActive(false);
 	}
+	
+}
+
+bool ATS_ArenaCharacter_MP::ServerOnDeath_Validate()
+{
+	// TODO some real validation
+	return true;
+}
+
+void ATS_ArenaCharacter_MP::ServerOnDeath_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		// disable input for this pawn
+		ClientDeactivateInput();
+		// Start Respawn Timer
+		GetWorld()->GetTimerManager().SetTimer(RespawnTimer, this, 
+			&ATS_ArenaCharacter_MP::ClientDespawn, 3.f, false);
+		UE_LOG(LogTemp, Warning, TEXT("He Dead"))
+	}
+}
+
+void ATS_ArenaCharacter_MP::ClientDeactivateInput_Implementation()
+{
+	this->DisableInput(Cast<APlayerController>(this->GetController()));
+}
+
+void ATS_ArenaCharacter_MP::ClientDespawn_Implementation()
+{
+	// harsh :(
+	this->Destroy();
 }

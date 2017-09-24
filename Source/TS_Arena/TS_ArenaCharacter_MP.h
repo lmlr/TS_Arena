@@ -58,6 +58,17 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Pickup")
 	void ServerIssueStopFireCommand();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerOnDeath();
+
+	UFUNCTION(Client, Reliable)
+	void ClientDeactivateInput();
+
+	FTimerHandle RespawnTimer;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ClientDespawn();
+
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
@@ -82,5 +93,10 @@ private:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class ABaseWeapon_Pickup* EquipedWeapon;
+
+	// TODO Might not need replication
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Stats",
+		meta = (AllowPrivateAccess = "true"))
+	bool bIsDead;
 
 };
