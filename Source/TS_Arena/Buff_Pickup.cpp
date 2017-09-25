@@ -20,7 +20,8 @@ void ABuff_Pickup::Collected_Implementation(ATS_ArenaCharacter_MP * Collector)
 
 			UE_LOG(LogTemp, Warning, TEXT("Super worked super"))
 
-			Collector->ServerDeltaHealthEvent(DeltaHealth);
+			// TODO currently passing NULL, might want to change this
+			Collector->ServerDeltaHealthEvent(DeltaHealth, nullptr);
 		}
 
 	}

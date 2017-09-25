@@ -87,7 +87,8 @@ void ABase_Projectile::ProjectileHandleCollision_Implementation(AActor* HitTarge
 		if (bHitPlayer)
 		{
 			// Deal Damage to the Player
-			Cast<ATS_ArenaCharacter_MP>(HitTarget)->ServerDeltaHealthEvent(-20.f);
+			Cast<ATS_ArenaCharacter_MP>(HitTarget)->ServerDeltaHealthEvent(-20.f, 
+				Cast<AController>(this->GetOwner()));
 			// Activate visual effects on all clients
 			ClientProjectileCollision();
 		}

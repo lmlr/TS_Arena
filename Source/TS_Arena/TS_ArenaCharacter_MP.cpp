@@ -113,14 +113,18 @@ void ATS_ArenaCharacter_MP::ServerDropItem_Implementation()
 }
 
 
-bool ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Validate(float DeltaHealth)
+bool ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Validate(
+	float DeltaHealth, 
+	AController* DamageDealer)
 {
 
 	// TODO some real validation
 	return true;
 }
 
-void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(float DeltaHealth)
+void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(
+	float DeltaHealth, 
+	AController* DamageDealer)
 {
 	if (Role == ROLE_Authority)
 	{
@@ -129,7 +133,7 @@ void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(float DeltaHea
 		if (CurrentHealth <= 0.f)
 		{
 			bIsDead = true;
-			ServerOnDeath();
+			ServerOnDeath(DamageDealer);
 		}
 	}
 }
@@ -198,13 +202,13 @@ void ATS_ArenaCharacter_MP::ServerIssueStopFireCommand_Implementation()
 	
 }
 
-bool ATS_ArenaCharacter_MP::ServerOnDeath_Validate()
+bool ATS_ArenaCharacter_MP::ServerOnDeath_Validate(AController* Killer)
 {
 	// TODO some real validation
 	return true;
 }
 
-void ATS_ArenaCharacter_MP::ServerOnDeath_Implementation()
+void ATS_ArenaCharacter_MP::ServerOnDeath_Implementation(AController* Killer)
 {
 	if (Role == ROLE_Authority)
 	{
@@ -220,6 +224,14 @@ void ATS_ArenaCharacter_MP::ServerOnDeath_Implementation()
 
 		// Increment this players Death Count in PlayerState
 		Cast<ATS_Arena_PlayerState>(this->GetController()->PlayerState)->IncrementDeaths();
+		if (Killer)
+		{
+			if (auto OtherPlayer = Cast<APlayerController>(Killer))
+			{
+				Cast<ATS_Arena_PlayerState>(OtherPlayer->PlayerState)->IncrementFrags();
+			}
+		}
+		
 
 		// Let the Game Mode handle destruction
 		// TODO Timer!

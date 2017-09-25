@@ -41,7 +41,7 @@ public:
 	float GetCurrentHealth() { return CurrentHealth; };
 
 	UFUNCTION(Server, Reliable, WithValidation, Category = "Stats")
-	void ServerDeltaHealthEvent(float DeltaHealth);
+	void ServerDeltaHealthEvent(float DeltaHealth, AController* DamageDealer);
 
 	class ABaseWeapon_Pickup* GetEquipedWeapon() { return EquipedWeapon; };
 
@@ -59,7 +59,7 @@ public:
 	void ServerIssueStopFireCommand();
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerOnDeath();
+	void ServerOnDeath(AController* Killer);
 
 	UFUNCTION(Client, Reliable)
 	void ClientDeactivateInput();
