@@ -8,6 +8,7 @@
 #include "BaseWeapon_Pickup.h"
 #include "Engine/World.h"
 #include "TS_ArenaGameMode.h"
+#include "TS_Arena_PlayerState.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -216,6 +217,9 @@ void ATS_ArenaCharacter_MP::ServerOnDeath_Implementation()
 
 		// Drop the currently equiped Weapon BEFORE you die!
 		ServerDropItem();
+
+		// Increment this players Death Count in PlayerState
+		Cast<ATS_Arena_PlayerState>(this->GetController()->PlayerState)->IncrementDeaths();
 
 		// Let the Game Mode handle destruction
 		// TODO Timer!

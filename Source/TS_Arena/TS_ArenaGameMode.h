@@ -14,15 +14,21 @@ class ATS_ArenaGameMode : public AGameModeBase
 public:
 	ATS_ArenaGameMode();
 
-
-
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerSpawnCharacter(class AController* Controller);
 
 private:
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class ATS_ArenaCharacter> CharacterSpawnClass;
+
+	class ATS_Arena_GameStateBase* GameState;
+
+	// List of PlayerControllers
+	TArray<class APlayerController*> PlayerControllerList;
 };
 
 

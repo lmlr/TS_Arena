@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/World.h"
 #include "TS_ArenaCharacter_MP.h"
+#include "TS_Arena_GameStateBase.h"
 
 ATS_ArenaGameMode::ATS_ArenaGameMode()
 {
@@ -14,6 +15,7 @@ ATS_ArenaGameMode::ATS_ArenaGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	GameState = GetGameState<ATS_Arena_GameStateBase>();
 }
 
 bool ATS_ArenaGameMode::ServerSpawnCharacter_Validate(class AController* Controller)
@@ -34,10 +36,21 @@ void ATS_ArenaGameMode::ServerSpawnCharacter_Implementation(class AController* C
 			Controller->UnPossess();
 			Pawn->Destroy();
 		}
+
+		// Better-> Choose a random spawn point of ALL spawn points
 		auto NextSpawn = ChoosePlayerStart(Controller);
 		FActorSpawnParameters SpawnParams;
 		auto Loc = NextSpawn->GetActorTransform();
 		auto NewCharacter = GetWorld()->SpawnActor<ATS_ArenaCharacter_MP>(CharacterSpawnClass, Loc, SpawnParams);
 		Controller->Possess(NewCharacter);
 	}
+}
+
+void ATS_ArenaGameMode::PostLogin(APlayerController * NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+	// Add the joinen Player to our PlayerController List
+	PlayerControllerList.Add(NewPlayer);
+
+	UE_LOG(LogTemp, Warning, TEXT("New Player joined: %s"), *NewPlayer->GetName())
 }
