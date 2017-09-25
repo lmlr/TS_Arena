@@ -7,6 +7,7 @@
 //#include "Base_Pickup.h"
 #include "BaseWeapon_Pickup.h"
 #include "Engine/World.h"
+#include "TS_ArenaGameMode.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -209,9 +210,17 @@ void ATS_ArenaCharacter_MP::ServerOnDeath_Implementation()
 		// disable input for this pawn
 		ClientDeactivateInput();
 		// Start Respawn Timer
-		GetWorld()->GetTimerManager().SetTimer(RespawnTimer, this, 
+		/*GetWorld()->GetTimerManager().SetTimer(RespawnTimer, this, 
 			&ATS_ArenaCharacter_MP::ClientDespawn, 3.f, false);
-		UE_LOG(LogTemp, Warning, TEXT("He Dead"))
+		UE_LOG(LogTemp, Warning, TEXT("He Dead"))*/
+
+		// Drop the currently equiped Weapon BEFORE you die!
+		ServerDropItem();
+
+		// Let the Game Mode handle destruction
+		// TODO Timer!
+		Cast<ATS_ArenaGameMode>(GetWorld()->GetAuthGameMode())->
+			ServerSpawnCharacter(this->GetController());
 	}
 }
 
@@ -223,5 +232,5 @@ void ATS_ArenaCharacter_MP::ClientDeactivateInput_Implementation()
 void ATS_ArenaCharacter_MP::ClientDespawn_Implementation()
 {
 	// harsh :(
-	this->Destroy();
+	
 }
