@@ -9,6 +9,16 @@
 /**
  * 
  */
+
+UENUM()
+enum class EBuffType : uint8
+{
+	Health 		UMETA(DisplayName = "Health"),
+	Ammo		UMETA(DisplayName = "Ammo"),
+	Damage		UMETA(DisplayName = "Damage"),
+	Armor		UMETA(DisplayName = "Armor")
+};
+
 UCLASS()
 class TS_ARENA_API ABuff_Pickup : public ABase_Pickup
 {
@@ -21,4 +31,11 @@ class TS_ARENA_API ABuff_Pickup : public ABase_Pickup
 private:
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float DeltaHealth;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float DeltaAmmo;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	EBuffType BuffType;
+	
 };

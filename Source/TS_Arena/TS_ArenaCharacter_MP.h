@@ -22,6 +22,11 @@ public:
 	
 	class USphereComponent* GetPickupSphere() const { return PickupSphere; }
 
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	UFUNCTION(BlueprintCallable, Category = "Pickup")
 	void ClientCollectItem();
 
@@ -68,6 +73,10 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void ClientDespawn();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Pickup",

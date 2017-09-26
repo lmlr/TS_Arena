@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "TS_ArenaGameMode.h"
 #include "TS_Arena_PlayerState.h"
+#include "Buff_Pickup.h"
 
 // This should include all gameplay specifics for the Player Character
 // e.g. Health, Stamina, Weapon...
@@ -41,6 +42,12 @@ ATS_ArenaCharacter_MP::ATS_ArenaCharacter_MP()
 		bIsDead = false;
 	}
 
+}
+
+void ATS_ArenaCharacter_MP::BeginPlay()
+{
+	Super::BeginPlay();
+	PickupSphere->OnComponentBeginOverlap.AddDynamic(this, &ATS_ArenaCharacter_MP::OnOverlapBegin);
 }
 
 void ATS_ArenaCharacter_MP::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -129,6 +136,12 @@ void ATS_ArenaCharacter_MP::ServerDeltaHealthEvent_Implementation(
 	if (Role == ROLE_Authority)
 	{
 		CurrentHealth += DeltaHealth;
+		// Check if the character is at max Health
+		if (CurrentHealth > MaxHealth)
+		{
+			CurrentHealth = MaxHealth;
+		}
+
 		// Check if the character died
 		if (CurrentHealth <= 0.f)
 		{
@@ -249,4 +262,20 @@ void ATS_ArenaCharacter_MP::ClientDespawn_Implementation()
 {
 	// harsh :(
 	
+}
+
+void ATS_ArenaCharacter_MP::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, 
+	AActor * OtherActor, UPrimitiveComponent * OtherComp, 
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	// Overlap Logic
+	if (Role == ROLE_Authority)
+	{
+		// Check if the other actor is of class ABuff_Pickup
+		if (OtherActor->IsA(ABuff_Pickup::StaticClass()))
+		{
+			// if it is, run collection logic
+			Cast<ABuff_Pickup>(OtherActor)->Collected(this);
+		}
+	}
 }

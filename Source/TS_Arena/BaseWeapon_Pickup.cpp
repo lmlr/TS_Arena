@@ -125,6 +125,10 @@ void ABaseWeapon_Pickup::StartFiring_Implementation()
 			// Fire a Projectile
 			ABase_Projectile* Projectile =
 				GetWorld()->SpawnActor<ABase_Projectile>(ProjectileClass, Transform, SpawnParams);
+
+			Ammo--;
+			UE_LOG(LogTemp, Warning, TEXT("%s Ammo is %d"), *(this->GetName()), Ammo)
+
 		}
 	}
 }
