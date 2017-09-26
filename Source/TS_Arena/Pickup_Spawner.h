@@ -27,6 +27,8 @@ public:
 
 	void PickupWasCollected();
 
+	FTimerHandle RespawnTimer;
+
 private:
 	// Box bounds for spawning the Pickup
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
@@ -39,7 +41,11 @@ private:
 	TSubclassOf<class ABase_Pickup> PickupClass;
 
 	// Pointer to Pickup that is currently on this Spawn
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Pickup")
 	class ABase_Pickup* CurrentlyActivePickup;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup",
+		meta = (AllowPrivateAccess = "true"))
+	float RespawnTime;
 	
 };

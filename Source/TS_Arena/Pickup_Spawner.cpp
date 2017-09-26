@@ -16,6 +16,8 @@ APickup_Spawner::APickup_Spawner()
 	PickupClass = nullptr;
 
 	CurrentlyActivePickup = nullptr;
+
+	RespawnTime = 10.f;
 }
 
 // Called when the game starts or when spawned
@@ -63,7 +65,8 @@ void APickup_Spawner::PickupWasCollected()
 		CurrentlyActivePickup = nullptr;
 		
 		// Set a timer for respawn
-		UE_LOG(LogTemp, Warning, TEXT("Pickup collection called on spawner"))
+		GetWorld()->GetTimerManager().SetTimer(RespawnTimer,
+			this, &APickup_Spawner::SpawnPickup, RespawnTime, false);
 	}
 }
 
