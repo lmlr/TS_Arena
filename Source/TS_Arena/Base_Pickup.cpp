@@ -6,6 +6,7 @@
 #include "Classes/Components/SphereComponent.h"
 #include "Classes/Components/SceneComponent.h"
 #include "Classes/Components/StaticMeshComponent.h"
+#include "Pickup_Spawner.h"
 
 // Sets default values
 ABase_Pickup::ABase_Pickup()
@@ -25,6 +26,8 @@ ABase_Pickup::ABase_Pickup()
 	PickupSphere->SetupAttachment(Root);
 	
 	bIsActive = true;
+
+	SpawnVolume = nullptr;
 
 }
 
@@ -57,6 +60,12 @@ void ABase_Pickup::Collected_Implementation(ATS_ArenaCharacter_MP* Collector)
 
 		this->SetLifeSpan(0.1f);
 		ClientCollected();
+		
+		// disassociate the pickup from the spawn volume
+		if (SpawnVolume)
+		{
+			SpawnVolume->PickupWasCollected();
+		}
 
 	}
 }
@@ -67,4 +76,12 @@ void ABase_Pickup::ClientCollected_Implementation()
 	
 	UE_LOG(LogTemp, Warning, TEXT("This Ran on a Client"))
 	
+}
+
+void ABase_Pickup::SetSpawnVolume(APickup_Spawner * NewSpawnVolume)
+{
+	if (Role == ROLE_Authority)
+	{
+		SpawnVolume = NewSpawnVolume;
+	}
 }

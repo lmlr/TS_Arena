@@ -7,6 +7,7 @@
 #include "Classes/Components/ArrowComponent.h"
 #include "Engine/World.h"
 #include "Base_Projectile.h"
+#include "Pickup_Spawner.h"
 
 ABaseWeapon_Pickup::ABaseWeapon_Pickup()
 {	
@@ -53,6 +54,10 @@ void ABaseWeapon_Pickup::Collected_Implementation(ATS_ArenaCharacter_MP * Collec
 
 		bInUse = true;
 		MyOwner = Collector;
+		if (Super::SpawnVolume)
+		{
+			Super::SpawnVolume->PickupWasCollected();
+		}
 	}
 }
 

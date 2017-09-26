@@ -14,6 +14,8 @@ APickup_Spawner::APickup_Spawner()
 	SpawningVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawningVolume"));
 
 	PickupClass = nullptr;
+
+	CurrentlyActivePickup = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -36,11 +38,32 @@ void APickup_Spawner::SpawnPickup()
 	{
 		auto Origin = SpawningVolume->Bounds.Origin;
 		auto Extent = SpawningVolume->Bounds.BoxExtent;
-		auto SpawnPoint = Origin + Extent*0.5f;
+		auto SpawnPoint = Origin;
 		FActorSpawnParameters SpawnParams;
 		FRotator SpawnRotation = { 0,0,0 };
 		ABase_Pickup* Pickup = GetWorld()->
 			SpawnActor<ABase_Pickup>(PickupClass, SpawnPoint, SpawnRotation, SpawnParams);
+		
+		// Set the currently active Pickup
+		CurrentlyActivePickup = Pickup;
+
+		// Associate this spawner with the created Pickup
+		CurrentlyActivePickup->SetSpawnVolume(this);
+	}
+}
+
+void APickup_Spawner::PickupWasCollected()
+{
+	if (Role == ROLE_Authority && CurrentlyActivePickup)
+	{
+		// Tell the Pickup that it no longer belongs to this spawner
+		CurrentlyActivePickup->SetSpawnVolume(nullptr);
+		
+		// Set the Currently held (active) Pickup to null
+		CurrentlyActivePickup = nullptr;
+		
+		// Set a timer for respawn
+		UE_LOG(LogTemp, Warning, TEXT("Pickup collection called on spawner"))
 	}
 }
 

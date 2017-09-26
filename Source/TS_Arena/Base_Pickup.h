@@ -23,9 +23,15 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void ClientCollected();
 
+	void SetSpawnVolume(class APickup_Spawner* NewSpawnVolume);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// Spawn volume associated with this Pickup, protected so child can have access
+	UPROPERTY(VisibleAnywhere)
+	class APickup_Spawner* SpawnVolume;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
@@ -42,5 +48,4 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup",
 		meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* Root;
-	
 };
